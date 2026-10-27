@@ -2422,7 +2422,11 @@ pub fn create_symmetric_key_msg(their_pk_b: [u8; 32]) -> (Bytes, Bytes, secretbo
 
 #[inline]
 pub fn using_public_server() -> bool {
+    // The built-in servers are only "public" when they are RustDesk's own; Nasaq Remote ships its server.
     crate::get_custom_rendezvous_server(get_option("custom-rendezvous-server")).is_empty()
+        && config::RENDEZVOUS_SERVERS
+            .iter()
+            .any(|s| s.ends_with(".rustdesk.com"))
 }
 
 pub struct ThrottledInterval {
