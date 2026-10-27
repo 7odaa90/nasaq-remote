@@ -1180,6 +1180,18 @@ pub fn get_app_name() -> String {
     hbb_common::config::APP_NAME.read().unwrap().clone()
 }
 
+/// Name shown to people (window titles, texts). `get_app_name()` stays the internal id
+/// used for paths, services and the URI scheme, so it must not contain spaces.
+#[inline]
+pub fn get_display_name() -> String {
+    let name = get_app_name();
+    if name == "NasaqRemote" {
+        "Nasaq Remote".to_owned()
+    } else {
+        name
+    }
+}
+
 #[inline]
 pub fn is_rustdesk() -> bool {
     hbb_common::config::APP_NAME.read().unwrap().eq("RustDesk")
