@@ -80,11 +80,7 @@ class _DesktopHomePageState extends State<DesktopHomePage>
     final isOutgoingOnly = bind.isOutgoingOnly();
     final children = <Widget>[
       if (!isOutgoingOnly) buildPresetPasswordWarning(),
-      if (bind.isCustomClient())
-        Align(
-          alignment: Alignment.center,
-          child: loadPowered(context),
-        ),
+      // Nasaq Remote: the RustDesk credit lives in Settings → About
       Align(
         alignment: Alignment.center,
         child: loadLogo(),

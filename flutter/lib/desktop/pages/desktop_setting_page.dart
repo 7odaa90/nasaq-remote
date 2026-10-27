@@ -2572,15 +2572,54 @@ class _AboutState extends State<_About> {
       final myId = data['myId'].toString();
       const linkStyle = TextStyle(decoration: TextDecoration.underline);
       final scrollController = ScrollController();
+      final year = DateTime.now().year;
+      // Nasaq Remote: publisher details, terms of use, and the AGPL notice for RustDesk
+      Widget link(String text, String url, {Color? color}) => InkWell(
+          onTap: () => launchUrlString(url),
+          child: Text(text, style: linkStyle.copyWith(color: color))
+              .marginSymmetric(vertical: 3.0));
+      Widget heading(String text) => Text(text,
+              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600))
+          .marginOnly(top: 18, bottom: 6);
+      Widget bullets(List<String> lines, TextDirection dir, {double size = 14}) =>
+          Directionality(
+            textDirection: dir,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: lines
+                  .map((line) => Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('•  ',
+                              style: TextStyle(
+                                  color: MyTheme.accent, fontSize: size)),
+                          Expanded(
+                              child: Text(line,
+                                  style:
+                                      TextStyle(height: 1.5, fontSize: size))),
+                        ],
+                      ).marginOnly(bottom: 6))
+                  .toList(),
+            ),
+          );
       return SingleChildScrollView(
         controller: scrollController,
         child: _Card(title: translate('About RustDesk'), children: [
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(
-                height: 8.0,
-              ),
+              Row(children: [
+                loadIcon(56),
+                const SizedBox(width: 14),
+                Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(displayAppName,
+                          style: const TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.w600)),
+                      const Text('نَسَق للتصميم الرقمي · Nasaq Studio'),
+                    ]),
+              ]).marginOnly(top: 8, bottom: 10),
               SelectionArea(
                   child: Text('${translate('Version')}: $version')
                       .marginSymmetric(vertical: 4.0)),
@@ -2594,49 +2633,60 @@ class _AboutState extends State<_About> {
               SelectionArea(
                   child: Text('${translate('ID')}: $myId')
                       .marginSymmetric(vertical: 4.0)),
-              InkWell(
-                  onTap: () {
-                    launchUrlString('https://studionasaq.com/p/privacy/');
-                  },
-                  child: Text(
-                    translate('Privacy Statement'),
-                    style: linkStyle,
-                  ).marginSymmetric(vertical: 4.0)),
-              InkWell(
-                  onTap: () {
-                    launchUrlString('https://studionasaq.com/remote/');
-                  },
-                  child: Text(
-                    translate('Website'),
-                    style: linkStyle,
-                  ).marginSymmetric(vertical: 4.0)),
+              heading('المطوّر · Developer'),
+              SelectionArea(
+                  child: const Text(
+                      'محمود سلامة — نَسَق للتصميم الرقمي\nMahmoud Salama — Nasaq Studio\nجدة، المملكة العربية السعودية · Jeddah, Saudi Arabia',
+                      style: TextStyle(height: 1.6))),
+              const SizedBox(height: 4),
+              link('studionasaq.com', 'https://studionasaq.com/remote/'),
+              link('info@mahmoudsalama.net', 'mailto:info@mahmoudsalama.net'),
+              link('+966 56 636 6464', 'tel:+966566366464'),
+              link('واتساب الدعم · Support on WhatsApp',
+                  'https://wa.me/201111202057'),
+              link(translate('Privacy Statement'),
+                  'https://studionasaq.com/p/privacy/'),
+              heading('شروط الاستخدام · Terms of use'),
+              bullets([
+                'نسق ريموت مخصّص للدعم الفني المشروع فقط، وبموافقة صاحب الجهاز.',
+                'يُمنع استخدامه في الاختراق، أو الدخول إلى أي جهاز دون إذن صاحبه، أو في أي نشاط مخالف للأنظمة. ويتحمّل المستخدم وحده المسؤولية النظامية كاملة عن أي استخدام مخالف، ولا تتحمّل نسق أي مسؤولية عنه.',
+                'رقم جهازك وكلمة المرور هما مفتاح الدخول إلى جهازك. لا تشاركهما إلا مع فريق نسق أو مع من تثق به، ونسق غير مسؤولة عن أي دخول يتم بسبب مشاركتك لهما مع الآخرين.',
+                'سيرفرات نسق تساعد الجهازين على إيجاد بعضهما فقط: لا تحفظ كلمة مرورك ولا تطّلع عليها، ولا تستطيع الاتصال بجهازك أو الدخول إليه دونها.',
+                'كل جلسة مشفّرة من طرف إلى طرف، وتستطيع إنهاءها في أي لحظة.',
+              ], TextDirection.rtl),
+              const SizedBox(height: 6),
+              bullets([
+                'Nasaq Remote is for legitimate technical support only, with the device owner\'s consent.',
+                'Using it to hack, to access any device without its owner\'s permission, or for any unlawful activity is prohibited. The user alone bears full legal responsibility for any misuse; Nasaq accepts no liability for it.',
+                'Your ID and password are the keys to your device. Share them only with the Nasaq team or people you trust. Nasaq is not responsible for any access resulting from sharing them with others.',
+                'Nasaq servers only help the two devices find each other: they do not store or see your password, and cannot connect to or access your device without it.',
+                'Every session is end-to-end encrypted, and you can end it at any moment.',
+              ], TextDirection.ltr, size: 13),
               Container(
-                decoration: const BoxDecoration(color: Color(0xFF2c8cff)),
+                decoration: BoxDecoration(
+                    color: MyTheme.accent,
+                    borderRadius: BorderRadius.circular(8)),
                 padding:
-                    const EdgeInsets.symmetric(vertical: 24, horizontal: 8),
+                    const EdgeInsets.symmetric(vertical: 16, horizontal: 14),
                 child: SelectionArea(
-                    child: Row(
+                    child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Copyright © ${DateTime.now().toString().substring(0, 4)} Purslane Tech Pte. Ltd.\n$license',
-                            style: const TextStyle(color: Colors.white),
-                          ),
-                          Text(
-                            translate('Slogan_tip'),
-                            style: TextStyle(
-                                fontWeight: FontWeight.w800,
-                                color: Colors.white),
-                          )
-                        ],
-                      ),
+                    Text(
+                      '© $year نَسَق للتصميم الرقمي · Nasaq Studio. The Nasaq Remote name and logo belong to Nasaq.',
+                      style: const TextStyle(color: Colors.white),
                     ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Nasaq Remote is based on RustDesk (Copyright © Purslane Tech Pte. Ltd.), free software under the GNU AGPL-3.0, provided without any warranty.${license.isEmpty ? '' : '\n$license'}',
+                      style: const TextStyle(color: Colors.white70, fontSize: 12),
+                    ),
+                    link('Source code: github.com/7odaa90/nasaq-remote',
+                        'https://github.com/7odaa90/nasaq-remote',
+                        color: Colors.white70),
                   ],
                 )),
-              ).marginSymmetric(vertical: 4.0)
+              ).marginOnly(top: 14, bottom: 4)
             ],
           ).marginOnly(left: _kContentHMargin)
         ]),
