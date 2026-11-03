@@ -50,6 +50,7 @@ jobs:
           Export-Certificate -Cert $cert -FilePath nasaq-remote-test.cer | Out-Null
 
       - name: Smoke test on this Windows machine
+        shell: powershell   # the Appx cmdlets don't work in pwsh
         run: |
           Import-Certificate -FilePath nasaq-remote-test.cer -CertStoreLocation Cert:\LocalMachine\TrustedPeople | Out-Null
           Add-AppxPackage "$env:PACKAGE_NAME-test.msix"
@@ -64,6 +65,7 @@ jobs:
           $running | Select-Object Id, ProcessName, Path | Format-Table -AutoSize | Out-String -Width 200
 
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        if: always()
         with:
           name: nasaq-remote-msix
           path: |
