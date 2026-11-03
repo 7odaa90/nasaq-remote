@@ -67,6 +67,31 @@ jobs:
           if (-not $running) { Write-Error "App is not running after launch"; exit 1 }
           $running | Select-Object Id, ProcessName, Path | Format-Table -AutoSize | Out-String -Width 200
 
+      - name: Take a Store screenshot of the running app
+        if: always()
+        continue-on-error: true
+        shell: powershell
+        run: |
+          try { Set-DisplayResolution -Width 1920 -Height 1080 -Force } catch { "Resolution unchanged: $_" }
+          Add-Type -AssemblyName System.Windows.Forms, System.Drawing
+          Add-Type @"
+          using System;
+          using System.Runtime.InteropServices;
+          public static class Win {
+            [DllImport("user32.dll")] public static extern bool ShowWindow(IntPtr h, int c);
+            [DllImport("user32.dll")] public static extern bool SetForegroundWindow(IntPtr h);
+          }
+          "@
+          $win = Get-Process NasaqRemote -ErrorAction SilentlyContinue | Where-Object { $_.MainWindowHandle -ne 0 } | Select-Object -First 1
+          if ($win) { "Window: $($win.MainWindowTitle)"; [Win]::ShowWindow($win.MainWindowHandle, 3) | Out-Null; [Win]::SetForegroundWindow($win.MainWindowHandle) | Out-Null } else { "No app window found" }
+          Start-Sleep -Seconds 15
+          $b = [System.Windows.Forms.Screen]::PrimaryScreen.Bounds
+          "Screen: $($b.Width)x$($b.Height)"
+          $img = New-Object System.Drawing.Bitmap $b.Width, $b.Height
+          $g = [System.Drawing.Graphics]::FromImage($img)
+          $g.CopyFromScreen($b.Location, [System.Drawing.Point]::Empty, $b.Size)
+          $img.Save("$PWD\store-screenshot.png", [System.Drawing.Imaging.ImageFormat]::Png)
+
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         if: always()
         with:
@@ -75,3 +100,4 @@ jobs:
             ${{ env.PACKAGE_NAME }}-store.msix
             ${{ env.PACKAGE_NAME }}-test.msix
             nasaq-remote-test.cer
+            store-screenshot.png
