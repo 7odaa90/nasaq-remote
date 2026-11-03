@@ -27,6 +27,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh run download ${{ inputs.source_run }} -n rustdesk-unsigned-windows-x86_64 -D pkg
+          Rename-Item pkg\rustdesk.exe NasaqRemote.exe
           Copy-Item res\msix\AppxManifest.xml pkg\AppxManifest.xml
           Copy-Item res\msix\Assets pkg\Assets -Recurse
           Get-ChildItem pkg | Select-Object Name
@@ -60,7 +61,7 @@ jobs:
           "Family: $($app.PackageFamilyName)"
           Start-Process "shell:AppsFolder\$($app.PackageFamilyName)!NasaqRemote"
           Start-Sleep -Seconds 30
-          $running = Get-Process rustdesk -ErrorAction SilentlyContinue
+          $running = Get-Process NasaqRemote -ErrorAction SilentlyContinue
           if (-not $running) { Write-Error "App is not running after launch"; exit 1 }
           $running | Select-Object Id, ProcessName, Path | Format-Table -AutoSize | Out-String -Width 200
 

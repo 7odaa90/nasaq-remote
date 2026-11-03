@@ -28,7 +28,7 @@
   </Resources>
 
   <Applications>
-    <Application Id="NasaqRemote" Executable="rustdesk.exe" EntryPoint="Windows.FullTrustApplication">
+    <Application Id="NasaqRemote" Executable="NasaqRemote.exe" EntryPoint="Windows.FullTrustApplication">
       <uap:VisualElements
         DisplayName="Nasaq Remote"
         Description="Remote technical support from Nasaq"
