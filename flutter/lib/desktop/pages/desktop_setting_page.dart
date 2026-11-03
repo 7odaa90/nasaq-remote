@@ -9,6 +9,7 @@ import 'package:flutter_hbb/common.dart';
 import 'package:flutter_hbb/common/widgets/audio_input.dart';
 import 'package:flutter_hbb/common/widgets/setting_widgets.dart';
 import 'package:flutter_hbb/consts.dart';
+import 'package:flutter_hbb/desktop/store_package.dart';
 import 'package:flutter_hbb/desktop/pages/desktop_home_page.dart';
 import 'package:flutter_hbb/common/widgets/keyboard_shortcuts/page_body.dart';
 import 'package:flutter_hbb/desktop/pages/desktop_keyboard_shortcuts_page.dart';
@@ -77,6 +78,7 @@ class DesktopSettingPage extends StatefulWidget {
     if (!bind.isIncomingOnly()) SettingsTabKey.display,
     if (!bind.isDisableAccount()) SettingsTabKey.account,
     if (isWindows &&
+        !isStorePackage && // the Store package has no printer driver
         !bind.isDisableSettings() &&
         bind.mainGetBuildinOption(key: kOptionHideRemotePrinterSetting) != 'Y')
       SettingsTabKey.printer,

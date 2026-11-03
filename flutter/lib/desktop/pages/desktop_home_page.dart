@@ -6,6 +6,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hbb/common.dart';
+import 'package:flutter_hbb/desktop/store_package.dart';
 import 'package:flutter_hbb/common/widgets/animated_rotation_widget.dart';
 import 'package:flutter_hbb/common/widgets/custom_password.dart';
 import 'package:flutter_hbb/consts.dart';
@@ -454,7 +455,7 @@ class _DesktopHomePageState extends State<DesktopHomePage>
       return buildInstallCard("", systemError, "", () {});
     }
 
-    if (isWindows && !bind.isDisableInstallation()) {
+    if (isWindows && !bind.isDisableInstallation() && !isStorePackage) {
       if (!bind.mainIsInstalled()) {
         return buildInstallCard(
             "", bind.isOutgoingOnly() ? "" : "install_tip", "Install",
